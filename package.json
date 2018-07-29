@@ -1,0 +1,20 @@
+{
+  "name": "operational-transformation",
+  "version": "0.0.1",
+  "main": "lib/index",
+  "types": "lib/index",
+  "repository": "git@github.com:deamont66/operational-transformation.git",
+  "author": "Jiří Šimeček <simecekjiri95@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.1",
+    "jest": "^23.4.2",
+    "ts-jest": "^23.0.1",
+    "tslint": "^5.11.0",
+    "typescript": "^2.9.2"
+  }
+}
