@@ -22,3 +22,4 @@ coverage
 # Dependency directory
 node_modules
 bower_components
+\.vscode/
