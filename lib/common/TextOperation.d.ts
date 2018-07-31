@@ -115,5 +115,68 @@ export declare class TextOperation {
      * @memberof TextOperation
      */
     apply(str: string): string;
+    /**
+     * Computes the inverse of an operation. The inverse of an operation is the
+     * operation that reverts the effects of the operation, e.g. when you have an
+     * operation 'insert("hello "); skip(6);' then the inverse is 'delete("hello ");
+     * skip(6);'. The inverse should be used for implementing undo.
+     *
+     * @param {string} str
+     * @returns {TextOperation}
+     * @memberof TextOperation
+     */
+    invert(str: string): TextOperation;
+    /**
+     * Compose merges two consecutive operations into one operation, that
+     * preserves the changes of both. Or, in other words, for each input string S
+     * and a pair of consecutive operations A and B,
+     * apply(apply(S, A), B) = apply(S, compose(A, B)) must hold.
+     *
+     * @param {TextOperation} other
+     * @returns {TextOperation}
+     * @memberof TextOperation
+     */
+    compose(other: TextOperation): TextOperation;
+    private static getSimpleOp;
+    private static getStartIndex;
+    /**
+     * When you use ctrl-z to undo your latest changes, you expect the program not
+     * to undo every single keystroke but to undo your last sentence you wrote at
+     * a stretch or the deletion you did by holding the backspace key down. This
+     * This can be implemented by composing operations on the undo stack. This
+     * method can help decide whether two operations should be composed. It
+     * returns true if the operations are consecutive insert operations or both
+     * operations delete text at the same position. You may want to include other
+     * factors like the time since the last change in your decision (feel free to
+     * override this method in your children class).
+     *
+     * @param {TextOperation} other
+     * @returns {boolean}
+     * @memberof TextOperation
+     */
+    shouldBeComposedWith(other: TextOperation): boolean;
+    /**
+     * Decides whether two operations should be composed with each other
+     * if they were inverted, that is
+     * `shouldBeComposedWith(a, b) = shouldBeComposedWithInverted(b^{-1}, a^{-1})`.
+     *
+     * @param {TextOperation} other
+     * @returns {boolean}
+     * @memberof TextOperation
+     */
+    shouldBeComposedWithInverted(other: TextOperation): boolean;
+    /**
+     * Transform takes two operations A and B that happened concurrently and
+     * produces two operations A' and B' (in an array) such that
+     * `apply(apply(S, A), B') = apply(apply(S, B), A')`. This function is the
+     * heart of OT.
+     *
+     * @static
+     * @param {TextOperation} operation1
+     * @param {TextOperation} operation2
+     * @returns {[TextOperation, TextOperation]}
+     * @memberof TextOperation
+     */
+    static transform(operation1: TextOperation, operation2: TextOperation): [TextOperation, TextOperation];
 }
 export {};

@@ -5,11 +5,11 @@ abstract class Operation {
     abstract equals(other: Operation): boolean;
 
     isRetain(): boolean {
-        return this.constructor.name === 'Retain';
+        return this.constructor.name === 'Retain' && this.getNumberValue() !== 0;
     }
 
     isDelete(): boolean {
-        return this.constructor.name === 'Delete';
+        return this.constructor.name === 'Delete' && this.getNumberValue() !== 0;
     }
 
     isInsert(): boolean {
@@ -632,7 +632,7 @@ export class TextOperation {
                 throw new Error('Cannot compose operations: first operation is too short.');
             }
             if (typeof op2 === 'undefined') {
-                throw new Error('Cannot compose operations: first operation is too long.');
+                throw new Error('Cannot compose operations: second operation is too long.');
             }
 
             let minl: number;

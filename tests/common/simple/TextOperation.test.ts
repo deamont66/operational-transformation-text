@@ -368,7 +368,7 @@ test('TextOperation shouldBeComposedWith random', () => {
 test('TextOperation transform', () => {
     let doc = '1';
     let a = new TextOperation().insert('2').retain(1);
-    let b = new TextOperation().delete(1);
+    let b = new TextOperation().delete(1).insert('a');
 
     let [transformA, transformB] = TextOperation.transform(a, b);
     expect(transformB.apply(a.apply(doc))).toBe(transformA.apply(b.apply(doc)));
@@ -380,6 +380,10 @@ test('TextOperation transform random', () => {
         const doc = randomString(5);
         const a = randomOperation(doc);
         const b = randomOperation(doc);
+
+        console.log("'" + doc + "'");
+        console.log(a.toString());
+        console.log(b.toString());
 
         const [aPrime, bPrime] = TextOperation.transform(a, b);
         const abPrime = a.compose(bPrime);
