@@ -5,12 +5,12 @@ export const randomInt = (n: number): number => {
 };
 
 export const randomString = (n: number): string => {
-    let str: string = '';
+    let str = '';
     while (n--) {
         if (Math.random() < 0.15) {
             str += '\n';
         } else {
-            var chr = randomInt(26) + 97;
+            const chr = randomInt(26) + 97;
             str += String.fromCharCode(chr);
         }
     }
@@ -18,15 +18,15 @@ export const randomString = (n: number): string => {
 };
 
 export const randomOperation = (str: string): TextOperation => {
-    const operation: TextOperation = new TextOperation();
+    const operation = new TextOperation();
     let left: number;
     while (true) {
         left = str.length - operation.baseLength;
         if (left === 0) {
             break;
         }
-        const r: number = Math.random();
-        const l: number = 1 + randomInt(Math.min(left - 1, 20));
+        const r = Math.random();
+        const l = 1 + randomInt(Math.min(left - 1, 20));
         if (r < 0.2) {
             operation.insert(randomString(l));
         } else if (r < 0.4) {
