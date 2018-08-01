@@ -15,6 +15,10 @@ abstract class Operation {
     isInsert(): boolean {
         return this.constructor.name === 'Insert';
     }
+
+    toJSON(): number | string {
+        return this.isInsert() ? this.getStringValue() : this.getNumberValue();
+    }
 }
 
 export class Retain extends Operation {
@@ -184,7 +188,7 @@ export class TextOperation {
         if (this.ops.length > 0 && this.ops[this.ops.length - 1].isInsert()) {
             // Merge insert op.
             this.ops[this.ops.length - 1].add(str);
-        } else if (this.ops.length > 1 && this.ops[this.ops.length - 1].isDelete()) {
+        } else if (this.ops.length > 0 && this.ops[this.ops.length - 1].isDelete()) {
             // It doesn't matter when an operation is applied whether the operation
             // is delete(3), insert("something") or insert("something"), delete(3).
             // Here we enforce that in this case, the insert op always comes first.
@@ -644,7 +648,7 @@ export class TextOperation {
                     minl = op2Length;
                     op1 = new Retain(op1Length - op2Length);
                     op2 = operation2.ops[i2++];
-                } else if (op1 === op2) {
+                } else if (op1Length === op2Length) {
                     minl = op2Length;
                     op1 = operation1.ops[i1++];
                     op2 = operation2.ops[i2++];

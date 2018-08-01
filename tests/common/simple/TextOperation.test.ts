@@ -375,15 +375,11 @@ test('TextOperation transform', () => {
 });
 
 test('TextOperation transform random', () => {
-    randomTest(1, () => {
+    randomTest(40, () => {
         // invariant: compose(a, b') = compose(b, a') where (a', b') = transform(a, b)
-        const doc = randomString(5);
+        const doc = randomString(50);
         const a = randomOperation(doc);
         const b = randomOperation(doc);
-
-        console.log("'" + doc + "'");
-        console.log(a.toString());
-        console.log(b.toString());
 
         const [aPrime, bPrime] = TextOperation.transform(a, b);
         const abPrime = a.compose(bPrime);
