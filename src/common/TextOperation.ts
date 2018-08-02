@@ -636,7 +636,7 @@ export class TextOperation {
                 throw new Error('Cannot compose operations: first operation is too short.');
             }
             if (typeof op2 === 'undefined') {
-                throw new Error('Cannot compose operations: second operation is too long.');
+                throw new Error('Cannot compose operations: second operation is too short.');
             }
 
             let minl: number;
@@ -705,7 +705,7 @@ export class TextOperation {
                 }
                 operation2prime.delete(minl);
             } else {
-                throw new Error("The two operations aren't compatible");
+                throw new Error('Unknown operation: operations are not compatible.');
             }
         }
 

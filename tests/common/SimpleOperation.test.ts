@@ -1,5 +1,5 @@
-import { SimpleOperation, Noop, Insert, Delete } from '../../../src/common/SimpleOperation';
-import { randomString, randomOperation, randomTest } from '../../randomHelper';
+import { SimpleOperation, Noop, Insert, Delete } from '../../src/common/SimpleOperation';
+import { randomString, randomOperation, randomTest } from '../randomHelper';
 
 /* Noop or Noop */
 

@@ -1,4 +1,4 @@
-import { Delete, Noop } from '../../../src/common/SimpleOperation';
+import { Delete, Noop } from '../../src/common/SimpleOperation';
 
 test('Delete constructor should checked passed parameters', () => {
     expect(() => new Delete(0, 0)).toThrow(/count/);

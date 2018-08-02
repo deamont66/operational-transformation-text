@@ -1,4 +1,4 @@
-import { Retain, Delete, Insert } from '../../../src/common/TextOperation';
+import { Retain, Delete, Insert } from '../../src/common/TextOperation';
 
 test('Retain is retain and has correnct value', () => {
     const retain = new Retain(5);
@@ -61,4 +61,10 @@ test('Insert is insert and has correnct value', () => {
 
     ins.add(' world');
     expect(ins.getStringValue()).toBe('hello world');
+});
+
+test('Operation toJSON', () => {
+    expect(new Retain(5).toJSON()).toBe(5);
+    expect(new Delete(-5).toJSON()).toBe(-5);
+    expect(new Insert('ABC').toJSON()).toBe('ABC');
 });
