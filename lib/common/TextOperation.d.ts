@@ -6,6 +6,7 @@ declare abstract class Operation {
     isRetain(): boolean;
     isDelete(): boolean;
     isInsert(): boolean;
+    toJSON(): number | string;
 }
 export declare class Retain extends Operation {
     length: number;

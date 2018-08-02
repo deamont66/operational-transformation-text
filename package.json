@@ -10,8 +10,14 @@
         "build": "tsc",
         "test": "jest"
     },
+    "husky": {
+       "hooks": {
+            "pre-commit": "yarn build && git add -A"
+        }
+    },
     "devDependencies": {
         "@types/jest": "^23.3.1",
+        "husky": "^1.0.0-rc.13",
         "jest": "^23.4.2",
         "ts-jest": "^23.0.1",
         "ts-node": "^7.0.0",

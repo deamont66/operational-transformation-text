@@ -1,0 +1,9 @@
+language:
+  node_js
+install:
+  - yarn global add -g codecov
+script:
+  - yarn test --coverage
+  - codecov
+cache:
+  yarn: true
