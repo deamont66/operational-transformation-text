@@ -7,9 +7,9 @@ install:
   - yarn
   - yarn global add codecov
 script:
-  - yarn test --coverage
+  - yarn test --coverage --maxWorkers=4
 after_success:
-  - coverage
+  - codecov
 cache:
   yarn: true
   directories:
