@@ -4,9 +4,12 @@ node_js:
   - "node"
   - "lts/*"
 install:
+  - yarn
   - yarn global add -g codecov
 script:
   - yarn test --coverage
   - codecov
 cache:
   yarn: true
+  directories:
+    - node_modules
