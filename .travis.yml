@@ -1,0 +1,12 @@
+language:
+  node_js
+node_js:
+  - "node"
+  - "lts/*"
+install:
+  - yarn global add -g codecov
+script:
+  - yarn test --coverage
+  - codecov
+cache:
+  yarn: true
