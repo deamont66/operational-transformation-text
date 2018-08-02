@@ -5,10 +5,11 @@ node_js:
   - "lts/*"
 install:
   - yarn
-  - yarn global add -g codecov
+  - yarn global add codecov
 script:
   - yarn test --coverage
-  - codecov
+after_success:
+  - coverage
 cache:
   yarn: true
   directories:
