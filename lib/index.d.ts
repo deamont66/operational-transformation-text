@@ -1,3 +1,3 @@
-import { SimpleOperation, Insert, Delete, Noop } from './common/SimpleOperation';
-import { TextOperation } from './common/TextOperation';
+import { SimpleOperation, Insert, Delete, Noop } from './operations/SimpleOperation';
+import { TextOperation } from './operations/TextOperation';
 export { SimpleOperation, Insert, Delete, Noop, TextOperation };

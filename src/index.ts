@@ -1,5 +1,5 @@
-import { SimpleOperation, Insert, Delete, Noop } from './common/SimpleOperation';
-import { TextOperation } from './common/TextOperation';
+import { SimpleOperation, Insert, Delete, Noop } from './operations/SimpleOperation';
+import { TextOperation } from './operations/TextOperation';
 
 // export all classes from common part of this library
 

@@ -12,7 +12,7 @@
     },
     "husky": {
        "hooks": {
-            "pre-commit": "yarn build && git add -A"
+            "pre-commit": "rm -r lib && yarn build && git add -A"
         }
     },
     "devDependencies": {

@@ -1,4 +1,4 @@
-import { Retain, Delete, Insert } from '../../src/common/TextOperation';
+import { Retain, Delete, Insert } from '../../src/operations/TextOperation';
 
 test('Retain is retain and has correnct value', () => {
     const retain = new Retain(5);

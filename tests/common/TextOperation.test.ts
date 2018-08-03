@@ -1,4 +1,4 @@
-import { TextOperation, Retain, Insert, Delete } from '../../src/common/TextOperation';
+import { TextOperation, Retain, Insert, Delete } from '../../src/operations/TextOperation';
 import { randomString, randomOperation, randomTest } from '../randomHelper';
 
 test('TextOperation constructor sets default field values', () => {

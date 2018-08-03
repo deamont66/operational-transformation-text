@@ -1,4 +1,4 @@
-import { TextOperation } from '../src/common/TextOperation';
+import { TextOperation } from '../src/operations/TextOperation';
 
 export const randomInt = (n: number): number => {
     return Math.floor(Math.random() * n);
