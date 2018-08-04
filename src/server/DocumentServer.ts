@@ -1,9 +1,9 @@
 import { TextOperation } from '../operations/TextOperation';
-import { TypedEvent } from '../utils/TypedEvent';
+import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 
 export abstract class DocumentServer {
     currentRevision: number;
-    recievedOperation = new TypedEvent<TextOperation>();
+    recievedOperation = new SimpleTypedEvent<TextOperation>();
 
     constructor(revision: number = 0) {
         this.currentRevision = revision;

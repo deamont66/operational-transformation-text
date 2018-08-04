@@ -1,50 +1,58 @@
 import { TypedEvent } from '../../src/utils/TypedEvent';
 
-test('TestEvent on', () => {
-    const event = new TypedEvent<number>();
+test('TypedEvent on', () => {
+    const event = new TypedEvent<string, number>();
 
     const listener = jest.fn();
     event.on(listener);
-    event.emit(10);
-    expect(listener).toBeCalledWith(10);
+    event.emit('me', 10);
+    expect(listener).toBeCalledWith('me', 10);
 
+    listener.mockClear();
     event.off(listener);
-    event.emit(11);
-    expect(listener).not.toBeCalledWith(11);
+    event.emit('me', 11);
+    expect(listener).not.toBeCalled();
 
+    listener.mockClear();
     const handler = event.on(listener);
-    event.emit(10);
-    expect(listener).toBeCalledWith(10);
-    handler.dispose();
-    event.emit(11);
-    expect(listener).not.toBeCalledWith(11);
+    event.emit('me', 10);
+    expect(listener).toBeCalledWith('me', 10);
 
+    listener.mockClear();
+    handler.dispose();
+    event.emit('me', 11);
+    expect(listener).not.toBeCalled();
+
+    listener.mockClear();
     expect(() => event.off(listener)).not.toThrow();
 });
 
-test('TestEvent once', () => {
-    const event = new TypedEvent<number>();
+test('TypedEvent once', () => {
+    const event = new TypedEvent<string, number>();
 
     const listener = jest.fn();
     event.once(listener);
-    event.emit(10);
-    expect(listener).toBeCalledWith(10);
-    event.emit(11);
-    expect(listener).not.toBeCalledWith(11);
+    event.emit('me', 10);
+    expect(listener).toBeCalledWith('me', 10);
+
+    listener.mockClear();
+    event.emit('me', 11);
+    expect(listener).not.toBeCalled();
 });
 
-test('TestEvent pipe', () => {
-    const event = new TypedEvent<number>();
-    const pipe = new TypedEvent<number>();
+test('TypedEvent pipe', () => {
+    const event = new TypedEvent<string, number>();
+    const pipe = new TypedEvent<string, number>();
 
     const listener = jest.fn();
     const handler = pipe.on(listener);
     event.pipe(pipe);
 
-    event.emit(10);
-    expect(listener).toBeCalledWith(10);
+    event.emit('me', 10);
+    expect(listener).toBeCalledWith('me', 10);
     handler.dispose();
 
-    event.emit(11);
-    expect(listener).not.toBeCalledWith(11);
+    listener.mockClear();
+    event.emit('me', 11);
+    expect(listener).not.toBeCalled();
 });

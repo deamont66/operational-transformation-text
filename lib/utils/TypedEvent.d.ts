@@ -1,5 +1,5 @@
-export interface Listener<T> {
-    (event: T): any;
+export interface Listener<TSender, TEvent> {
+    (sender: TSender, event: TEvent): void;
 }
 export interface Disposable {
     dispose(): void;
@@ -9,14 +9,15 @@ export interface Disposable {
  *
  * @export
  * @class TypedEvent
- * @template T
+ * @template TSender
+ * @template TEvent
  */
-export declare class TypedEvent<T> {
+export declare class TypedEvent<TSender, TEvent> {
     private listeners;
     private listenersOncer;
-    on: (listener: Listener<T>) => Disposable;
-    once: (listener: Listener<T>) => void;
-    off: (listener: Listener<T>) => void;
-    emit: (event: T) => void;
-    pipe: (te: TypedEvent<T>) => Disposable;
+    on: (listener: Listener<TSender, TEvent>) => Disposable;
+    once: (listener: Listener<TSender, TEvent>) => void;
+    off: (listener: Listener<TSender, TEvent>) => void;
+    emit: (sender: TSender, event: TEvent) => void;
+    pipe: (te: TypedEvent<TSender, TEvent>) => Disposable;
 }

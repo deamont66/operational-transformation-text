@@ -1,8 +1,8 @@
 import { TextOperation } from '../operations/TextOperation';
-import { TypedEvent } from '../utils/TypedEvent';
+import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 export declare abstract class DocumentServer {
     currentRevision: number;
-    recievedOperation: TypedEvent<TextOperation>;
+    recievedOperation: SimpleTypedEvent<TextOperation>;
     constructor(revision?: number);
     abstract getOperationsAfterRevision(revisitionNumber: number): TextOperation[];
     receiveOperation(operationRevision: number, operation: TextOperation): TextOperation;
