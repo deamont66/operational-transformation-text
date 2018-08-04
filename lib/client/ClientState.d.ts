@@ -1,6 +1,6 @@
-import { AbstractLocalClient } from '../AbstractLocalClient';
-import { TextOperation } from '../../operations/TextOperation';
-import { Selection } from '../../operations/Selection';
+import { AbstractLocalClient } from './AbstractLocalClient';
+import { TextOperation } from '../operations/TextOperation';
+import { Selection } from '../operations/Selection';
 export interface ClientState {
     applyClient(client: AbstractLocalClient, operation: TextOperation): ClientState;
     applyServer(client: AbstractLocalClient, operation: TextOperation): ClientState;

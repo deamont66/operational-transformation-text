@@ -1,6 +1,6 @@
 import { TextOperation } from '..';
 import { Selection } from '../operations/Selection';
-import { ClientState } from './states/ClientState';
+import { ClientState } from './ClientState';
 export declare abstract class AbstractLocalClient {
     revision: number;
     state: ClientState;

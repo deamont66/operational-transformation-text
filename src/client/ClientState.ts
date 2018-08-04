@@ -1,43 +1,58 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var TextOperation_1 = require("../../operations/TextOperation");
-var Synchronized = /** @class */ (function () {
-    function Synchronized() {
-    }
-    Synchronized.prototype.applyClient = function (client, operation) {
+import { AbstractLocalClient } from './AbstractLocalClient';
+import { TextOperation } from '../operations/TextOperation';
+import { Selection } from '../operations/Selection';
+
+export interface ClientState {
+    applyClient(client: AbstractLocalClient, operation: TextOperation): ClientState;
+    applyServer(client: AbstractLocalClient, operation: TextOperation): ClientState;
+    serverAck(client: AbstractLocalClient): ClientState;
+    transformSelection(selection: Selection): Selection;
+    resend(client: AbstractLocalClient): void;
+}
+
+export class Synchronized implements ClientState {
+    applyClient(client: AbstractLocalClient, operation: TextOperation): ClientState {
         // When the user makes an edit, send the operation to the server and
         // switch to the 'AwaitingConfirm' state
         client.sendOperation(client.revision, operation);
         return new AwaitingConfirm(operation);
-    };
-    Synchronized.prototype.applyServer = function (client, operation) {
+    }
+
+    applyServer(client: AbstractLocalClient, operation: TextOperation): ClientState {
         // When we receive a new operation from the server, the operation can be
         // simply applied to the current document
         client.applyOperation(operation);
         return this;
-    };
-    Synchronized.prototype.serverAck = function (client) {
+    }
+
+    serverAck(client: AbstractLocalClient): ClientState {
         throw new Error('There is no pending operation (client is not expecting server ack).');
-    };
-    Synchronized.prototype.transformSelection = function (selection) {
+    }
+
+    transformSelection(selection: Selection): Selection {
         // Nothing to do because the latest server state and client state are the same.
         return selection;
-    };
-    Synchronized.prototype.resend = function () { };
-    return Synchronized;
-}());
-exports.Synchronized = Synchronized;
-exports.synchronizedInstance = new Synchronized();
-var AwaitingConfirm = /** @class */ (function () {
-    function AwaitingConfirm(outstanding) {
+    }
+
+    resend(): void {}
+}
+
+export const synchronizedInstance = new Synchronized();
+
+export class AwaitingConfirm implements ClientState {
+    outstanding: TextOperation;
+
+    constructor(outstanding: TextOperation) {
         this.outstanding = outstanding;
     }
-    AwaitingConfirm.prototype.applyClient = function (client, operation) {
+
+    applyClient(client: AbstractLocalClient, operation: TextOperation) {
         // When the user makes an edit, don't send the operation immediately,
         // instead switch to 'AwaitingWithBuffer' state
         return new AwaitingWithBuffer(this.outstanding, operation);
-    };
-    AwaitingConfirm.prototype.applyServer = function (client, operation) {
+    }
+
+    applyServer(client: AbstractLocalClient, operation: TextOperation): ClientState {
         // This is another client's operation. Visualization:
         //
         //                   /\
@@ -48,38 +63,45 @@ var AwaitingConfirm = /** @class */ (function () {
         //  (can be applied  \/
         //  to the client's
         //  current document)
-        var pair = TextOperation_1.TextOperation.transform(this.outstanding, operation);
+        const pair = TextOperation.transform(this.outstanding, operation);
         client.applyOperation(pair[1]);
         return new AwaitingConfirm(pair[0]);
-    };
-    AwaitingConfirm.prototype.serverAck = function (client) {
+    }
+
+    serverAck(client: AbstractLocalClient) {
         // The client's operation has been acknowledged
         // => switch to synchronized state
-        return exports.synchronizedInstance;
-    };
-    AwaitingConfirm.prototype.transformSelection = function (selection) {
+        return synchronizedInstance;
+    }
+
+    transformSelection(selection: Selection) {
         return selection.transform(this.outstanding);
-    };
-    AwaitingConfirm.prototype.resend = function (client) {
+    }
+
+    resend(client: AbstractLocalClient) {
         // The confirm didn't come because the client was disconnected.
         // Now that it has reconnected, we resend the outstanding operation.
         client.sendOperation(client.revision, this.outstanding);
-    };
-    return AwaitingConfirm;
-}());
-exports.AwaitingConfirm = AwaitingConfirm;
-var AwaitingWithBuffer = /** @class */ (function () {
-    function AwaitingWithBuffer(outstanding, buffer) {
+    }
+}
+
+export class AwaitingWithBuffer implements ClientState {
+    outstanding: TextOperation;
+    buffer: TextOperation;
+
+    constructor(outstanding: TextOperation, buffer: TextOperation) {
         // Save the pending operation and the user's edits since then
         this.outstanding = outstanding;
         this.buffer = buffer;
     }
-    AwaitingWithBuffer.prototype.applyClient = function (client, operation) {
+
+    applyClient(client: AbstractLocalClient, operation: TextOperation) {
         // Compose the user's changes onto the buffer
         var newBuffer = this.buffer.compose(operation);
         return new AwaitingWithBuffer(this.outstanding, newBuffer);
-    };
-    AwaitingWithBuffer.prototype.applyServer = function (client, operation) {
+    }
+
+    applyServer(client: AbstractLocalClient, operation: TextOperation) {
         // Operation comes from another client
         //
         //                       /\
@@ -97,25 +119,26 @@ var AwaitingWithBuffer = /** @class */ (function () {
         // document
         //
         // * pair1[1]
-        var pair1 = TextOperation_1.TextOperation.transform(this.outstanding, operation);
-        var pair2 = TextOperation_1.TextOperation.transform(this.buffer, pair1[1]);
+        const pair1 = TextOperation.transform(this.outstanding, operation);
+        const pair2 = TextOperation.transform(this.buffer, pair1[1]);
         client.applyOperation(pair2[1]);
         return new AwaitingWithBuffer(pair1[0], pair2[0]);
-    };
-    AwaitingWithBuffer.prototype.serverAck = function (client) {
+    }
+
+    serverAck(client: AbstractLocalClient) {
         // The pending operation has been acknowledged
         // => send buffer
         client.sendOperation(client.revision, this.buffer);
         return new AwaitingConfirm(this.buffer);
-    };
-    AwaitingWithBuffer.prototype.transformSelection = function (selection) {
+    }
+
+    transformSelection(selection: Selection) {
         return selection.transform(this.outstanding).transform(this.buffer);
-    };
-    AwaitingWithBuffer.prototype.resend = function (client) {
+    }
+
+    resend(client: AbstractLocalClient) {
         // The confirm didn't come because the client was disconnected.
         // Now that it has reconnected, we resend the outstanding operation.
         client.sendOperation(client.revision, this.outstanding);
-    };
-    return AwaitingWithBuffer;
-}());
-exports.AwaitingWithBuffer = AwaitingWithBuffer;
+    }
+}
