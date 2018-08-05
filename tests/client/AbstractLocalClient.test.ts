@@ -3,7 +3,7 @@ import { TextOperation } from '../../src';
 import { Synchronized, AwaitingConfirm } from '../../src/client/ClientState';
 import { Selection } from '../../src/operations/Selection';
 
-class TestLocalClient extends AbstractLocalClient {
+export class TestLocalClient extends AbstractLocalClient {
     sendOperation(revision: number, operation: TextOperation): void {
         throw new Error('Not implemented in test implementation');
     }

@@ -7,16 +7,7 @@ import {
 } from '../../src/client/ClientState';
 import { TextOperation } from '../../src';
 import { Selection } from '../../src/operations/Selection';
-
-class TestLocalClient extends AbstractLocalClient {
-    sendOperation(revision: number, operation: TextOperation): void {
-        throw new Error('Not implemented in test implementation');
-    }
-
-    applyOperation(operation: TextOperation): void {
-        throw new Error('Not implemented in test implementation');
-    }
-}
+import { TestLocalClient } from './AbstractLocalClient.test';
 
 describe('Synchronized', () => {
     describe('applyClient', () => {

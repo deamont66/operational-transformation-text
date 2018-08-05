@@ -2,6 +2,7 @@ import { Selection } from '../operations/Selection';
 import { TextOperation } from '../operations/TextOperation';
 import { Signal } from '../utils/Signal';
 import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
+import { RemoteClient } from './RemoteClient';
 
 interface Change {
     operation: TextOperation;
@@ -14,8 +15,9 @@ interface Change {
  * @export
  * @abstract
  * @class AbstractEditorAdapter
+ * @template TId remote client identificator type
  */
-export abstract class AbstractEditorAdapter {
+export abstract class AbstractEditorAdapter<TId> {
     /**
      * performed undo
      *
@@ -53,8 +55,23 @@ export abstract class AbstractEditorAdapter {
 
     /**
      * Sets other client selection to editor.
+     *
+     * @abstract
+     * @param {RemoteClient<TId>} client
+     * @param {Selection} selection
+     * @returns {*}
+     * @memberof AbstractEditorAdapter
      */
-    abstract setOtherSelection(): any;
+    abstract setOtherSelection(client: RemoteClient<TId>, selection: Selection): any;
+
+    /**
+     * Removes other client  selection from editor.
+     *
+     * @abstract
+     * @param {RemoteClient<TId>} client
+     * @memberof AbstractEditorAdapter
+     */
+    abstract removeOtherSelection(client: RemoteClient<TId>): void;
 
     /**
      * @return {String} editor value

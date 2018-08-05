@@ -3,27 +3,28 @@ import { Selection } from '../operations/Selection';
 import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 import { TypedEvent } from '../utils/TypedEvent';
 import { Signal } from '../utils/Signal';
+import { RemoteClient } from './RemoteClient';
 /**
  * AbstractServerAdapter for EditorClient
  *
  * @export
  * @abstract
  * @class ServerAdapter
- * @template TClient
+ * @template TId remote client identificator type
  */
-export declare abstract class AbstractServerAdapter<TClient> {
+export declare abstract class AbstractServerAdapter<TId> {
     /**
      * <client> - client left document
      *
      * @memberof ServerAdapter
      */
-    clientLeft: SimpleTypedEvent<TClient>;
+    clientLeft: SimpleTypedEvent<RemoteClient<TId>>;
     /**
      * <client, name> - client name set
      *
      * @memberof ServerAdapter
      */
-    clientNameChange: TypedEvent<TClient, string>;
+    clientNameChange: TypedEvent<RemoteClient<TId>, string>;
     /**
      * server operation ack
      *
@@ -41,7 +42,7 @@ export declare abstract class AbstractServerAdapter<TClient> {
      *
      * @memberof ServerAdapter
      */
-    selectionRecieved: TypedEvent<TClient, Selection>;
+    selectionRecieved: TypedEvent<RemoteClient<TId>, Selection>;
     /**
      * Gets called for emitting new Operation to server.
      *

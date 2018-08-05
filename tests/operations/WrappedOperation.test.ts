@@ -2,9 +2,6 @@ import { WrappedOperation } from '../../src/operations/WrappedOperation';
 import { TextOperation } from '../../src/operations/TextOperation';
 import { Selection } from '../../src/operations/Selection';
 
-jest.mock('../../src/operations/TextOperation');
-jest.mock('../../src/operations/Selection');
-
 test('WrappedOperation apply mock test', () => {
     const testOperation = new TextOperation();
     const op = new WrappedOperation(testOperation, Selection.createCursor(1));
@@ -71,5 +68,13 @@ test('WrappedOperation transform mock test', () => {
     selection.transform = jest.fn().mockReturnValue(retSelection0);
     selection2.transform = jest.fn().mockReturnValue(retSelection1);
 
-    const result = WrappedOperation.transform(op, op2);
+    const [result0, result1] = WrappedOperation.transform(op, op2);
+    expect(TextOperation.transform).toBeCalledWith(testOperation, testOperation2);
+    expect(selection.transform).toBeCalledWith(testOperation2);
+    expect(selection2.transform).toBeCalledWith(testOperation);
+
+    expect(result0.operation).toBe(retTextOperation0);
+    expect(result0.selection).toBe(retSelection0);
+    expect(result1.operation).toBe(retTextOperation1);
+    expect(result1.selection).toBe(retSelection1);
 });

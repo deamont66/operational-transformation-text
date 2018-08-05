@@ -2,7 +2,7 @@ import { AbstractServerAdapter } from '../../src/client/AbstractServerAdapter';
 import { TextOperation } from '../../src/operations/TextOperation';
 import { Selection } from '../../src/operations/Selection';
 
-class TestServerAdapter<TClient> extends AbstractServerAdapter<TClient> {
+export class TestServerAdapter<TId> extends AbstractServerAdapter<TId> {
     /**
      * Gets called for emitting new Operation to server.
      *
@@ -26,7 +26,7 @@ class TestServerAdapter<TClient> extends AbstractServerAdapter<TClient> {
 
 describe('AbstractServerAdapter', () => {
     it('should have all events', () => {
-        const adapter = new TestServerAdapter<string>();
+        const adapter = new TestServerAdapter<number>();
         expect(adapter.clientLeft).toBeDefined();
         expect(adapter.clientNameChange).toBeDefined();
         expect(adapter.operationAck).toBeDefined();

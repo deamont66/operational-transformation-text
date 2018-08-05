@@ -1,41 +1,29 @@
 import { AbstractEditorAdapter } from '../../src/client/AbstractEditorAdapter';
 import { TextOperation } from '../../src/operations/TextOperation';
 import { Selection } from '../../src/operations/Selection';
+import { RemoteClient } from '../../src/client/RemoteClient';
 
-class TestEditorAdapter extends AbstractEditorAdapter {
-    /**
-     * Sets other client selection to editor.
-     */
-    setOtherSelection(): any {
+export class TestEditorAdapter<TId> extends AbstractEditorAdapter<TId> {
+    setOtherSelection(client: RemoteClient<TId>, selection: Selection): any {
         throw new Error('Method not implemented.');
     }
 
-    /**
-     * @return {String} editor value
-     */
+    removeOtherSelection(client: RemoteClient<TId>): void {
+        throw new Error('Method not implemented.');
+    }
+
     getValue(): string {
         throw new Error('Method not implemented.');
     }
 
-    /**
-     * @return {Selection} editor active selection
-     */
     getSelection(): Selection {
         throw new Error('Method not implemented.');
     }
 
-    /**
-     * Applies text operation to editor.
-     * @param {TextOperation} operation
-     */
     applyOperation(operation: TextOperation): void {
         throw new Error('Method not implemented.');
     }
 
-    /**
-     * Sets editor selection
-     * @param {Selection} selection
-     */
     setSelection(selection: Selection): void {
         throw new Error('Method not implemented.');
     }
@@ -43,7 +31,7 @@ class TestEditorAdapter extends AbstractEditorAdapter {
 
 describe('AbstractEditorAdapter', () => {
     it('should have all events', () => {
-        const adapter = new TestEditorAdapter();
+        const adapter = new TestEditorAdapter<number>();
         expect(adapter.undo).toBeDefined();
         expect(adapter.redo).toBeDefined();
         expect(adapter.blur).toBeDefined();

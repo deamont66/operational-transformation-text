@@ -1,5 +1,6 @@
 import { Selection, Range } from '../../src/operations/Selection';
 import { TextOperation } from '../../src/operations/TextOperation';
+
 describe('Selection', () => {
     test('createCursor', () => {
         expect(Selection.createCursor(5).equals(new Selection([new Range(5, 5)]))).toBeTruthy();
