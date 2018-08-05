@@ -74,7 +74,7 @@ export class AwaitingConfirm implements ClientState {
         return synchronizedInstance;
     }
 
-    transformSelection(selection: Selection) {
+    transformSelection(selection: Selection): Selection {
         return selection.transform(this.outstanding);
     }
 

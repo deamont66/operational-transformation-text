@@ -3,7 +3,7 @@ import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 
 export abstract class DocumentServer {
     currentRevision: number;
-    recievedOperation = new SimpleTypedEvent<TextOperation>();
+    operationRecieved = new SimpleTypedEvent<TextOperation>();
 
     constructor(revision: number = 0) {
         this.currentRevision = revision;
@@ -13,14 +13,11 @@ export abstract class DocumentServer {
 
     receiveOperation(operationRevision: number, operation: TextOperation): TextOperation {
         const transformedOperation = this.transformReceivedOperation(operationRevision, operation);
-        this.recievedOperation.emit(transformedOperation);
+        this.operationRecieved.emit(transformedOperation);
         return transformedOperation;
     }
 
-    private transformReceivedOperation(
-        operationRevision: number,
-        operation: TextOperation
-    ): TextOperation {
+    transformReceivedOperation(operationRevision: number, operation: TextOperation): TextOperation {
         // Find all operations that the client didn't know of when it sent the
         // operation ...
         const concurrentOperations = this.getOperationsAfterRevision(operationRevision);
@@ -31,7 +28,7 @@ export abstract class DocumentServer {
         return operation;
     }
 
-    getRevision() {
+    getRevision(): number {
         return this.currentRevision;
     }
 }

@@ -12,7 +12,7 @@ import { Signal } from '../utils/Signal';
  * @class ServerAdapter
  * @template TClient
  */
-export abstract class ServerAdapter<TClient> {
+export abstract class AbstractServerAdapter<TClient> {
     /**
      * <client> - client left document
      *
@@ -25,7 +25,7 @@ export abstract class ServerAdapter<TClient> {
      *
      * @memberof ServerAdapter
      */
-    setClientName = new TypedEvent<TClient, string>();
+    clientNameChange = new TypedEvent<TClient, string>();
 
     /**
      * server operation ack
