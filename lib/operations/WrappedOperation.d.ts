@@ -1,15 +1,15 @@
 import { TextOperation } from './TextOperation';
-import { Selection } from './Selection';
+import { SelfSelection } from './SelfSelection';
 export declare class WrappedOperation {
     operation: TextOperation;
-    selection: Selection;
+    selection: SelfSelection | null;
     /**
      * Creates instance of WrappedOperation around TextOperation and Selection.
      * @param {TextOperation} operation
-     * @param {Selection} selection
+     * @param {SelfSelection} selection
      * @memberof WrappedOperation
      */
-    constructor(operation: TextOperation, selection: Selection);
+    constructor(operation: TextOperation, selection: SelfSelection | null);
     /**
      * Calls apply function of wrapped TextOperation
      */

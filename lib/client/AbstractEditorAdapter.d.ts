@@ -3,9 +3,9 @@ import { TextOperation } from '../operations/TextOperation';
 import { Signal } from '../utils/Signal';
 import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 import { RemoteClient } from './RemoteClient';
-interface Change {
+export interface Change {
     operation: TextOperation;
-    selection: Selection;
+    inverseOperation: TextOperation;
 }
 /**
  * AbstractEditorAdapter for EditorClient
@@ -83,4 +83,3 @@ export declare abstract class AbstractEditorAdapter<TId> {
      */
     abstract setSelection(selection: Selection): void;
 }
-export {};

@@ -2,12 +2,13 @@ import { AbstractEditorAdapter } from './AbstractEditorAdapter';
 import { Selection } from '../operations/Selection';
 export declare class RemoteClient<TId> {
     readonly id: TId;
-    readonly editorAdapter: AbstractEditorAdapter<TId>;
     name: string;
+    editorAdapter: AbstractEditorAdapter<TId> | null;
     lastSelection: Selection | null;
     selectionEditorHandler: any;
-    constructor(id: TId, editorAdapter: AbstractEditorAdapter<TId>, name?: string, selection?: Selection | null);
+    constructor(id: TId, name?: string, selection?: Selection | null);
     setName(name: string): void;
+    setEditorAdapter(editorAdapter: AbstractEditorAdapter<TId>): void;
     updateSelection(selection: Selection): void;
     /**
      * Removes client selection.

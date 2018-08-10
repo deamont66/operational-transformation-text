@@ -1,10 +1,13 @@
 import { TextOperation } from '..';
 import { Selection } from '../operations/Selection';
 import { ClientState, synchronizedInstance } from './ClientState';
+import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 
 export abstract class AbstractLocalClient {
     revision: number;
     state: ClientState;
+
+    stateChange = new SimpleTypedEvent<ClientState>();
 
     constructor(revision: number) {
         this.revision = revision;
@@ -19,6 +22,7 @@ export abstract class AbstractLocalClient {
      */
     setState(state: ClientState) {
         this.state = state;
+        this.stateChange.emit(state);
     }
 
     /**
@@ -47,10 +51,10 @@ export abstract class AbstractLocalClient {
      *
      * @memberof LocalClient
      */
-    serverAck() {
+    serverAck = () => {
         this.revision++;
         this.setState(this.state.serverAck(this));
-    }
+    };
 
     /**
      * Call this method when reconnected to server and want to resend last pending operation (if any).

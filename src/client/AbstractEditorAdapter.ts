@@ -4,9 +4,9 @@ import { Signal } from '../utils/Signal';
 import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 import { RemoteClient } from './RemoteClient';
 
-interface Change {
+export interface Change {
     operation: TextOperation;
-    selection: Selection;
+    inverseOperation: TextOperation;
 }
 
 /**

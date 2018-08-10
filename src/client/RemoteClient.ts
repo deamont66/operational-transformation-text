@@ -3,19 +3,13 @@ import { Selection } from '../operations/Selection';
 
 export class RemoteClient<TId> {
     readonly id: TId;
-    readonly editorAdapter: AbstractEditorAdapter<TId>;
     name: string;
+    editorAdapter: AbstractEditorAdapter<TId> | null = null;
     lastSelection: Selection | null = null;
     selectionEditorHandler: any = null;
 
-    constructor(
-        id: TId,
-        editorAdapter: AbstractEditorAdapter<TId>,
-        name: string = '',
-        selection: Selection | null = null
-    ) {
+    constructor(id: TId, name: string = '', selection: Selection | null = null) {
         this.id = id;
-        this.editorAdapter = editorAdapter;
         this.name = name;
 
         if (selection) {
@@ -32,9 +26,21 @@ export class RemoteClient<TId> {
         }
     }
 
+    setEditorAdapter(editorAdapter: AbstractEditorAdapter<TId>) {
+        this.editorAdapter = editorAdapter;
+
+        if (this.lastSelection) {
+            this.updateSelection(this.lastSelection);
+        }
+    }
+
     updateSelection(selection: Selection) {
         this.removeSelection();
-        this.selectionEditorHandler = this.editorAdapter.setOtherSelection(this, selection);
+        if (this.editorAdapter) {
+            this.selectionEditorHandler = this.editorAdapter.setOtherSelection(this, selection);
+        } else {
+            this.selectionEditorHandler = null;
+        }
         this.lastSelection = selection;
     }
 

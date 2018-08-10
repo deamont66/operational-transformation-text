@@ -1,9 +1,11 @@
 import { TextOperation } from '..';
 import { Selection } from '../operations/Selection';
 import { ClientState } from './ClientState';
+import { SimpleTypedEvent } from '../utils/SimpleTypedEvent';
 export declare abstract class AbstractLocalClient {
     revision: number;
     state: ClientState;
+    stateChange: SimpleTypedEvent<ClientState>;
     constructor(revision: number);
     /**
      * Sets new client state.
@@ -31,7 +33,7 @@ export declare abstract class AbstractLocalClient {
      *
      * @memberof LocalClient
      */
-    serverAck(): void;
+    serverAck: () => void;
     /**
      * Call this method when reconnected to server and want to resend last pending operation (if any).
      *
