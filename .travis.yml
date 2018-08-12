@@ -1,0 +1,16 @@
+language:
+  node_js
+node_js:
+  - "node"
+  - "lts/*"
+install:
+  - yarn
+  - yarn global add codecov
+script:
+  - yarn test --coverage --maxWorkers=2
+after_success:
+  - codecov
+cache:
+  yarn: true
+  directories:
+    - node_modules
