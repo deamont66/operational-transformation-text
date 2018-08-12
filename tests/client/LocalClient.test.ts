@@ -3,7 +3,7 @@ import { LocalClient } from '../../src/client/LocalClient';
 import { Selection } from '../../src/operations/Selection';
 import { TestServerAdapter } from './AbstractServerAdapter.test';
 import { TestEditorAdapter } from './AbstractEditorAdapter.test';
-import { TextOperation } from '../../src';
+import { TextOperation } from '../../src/operations/TextOperation';
 import { WrappedOperation } from '../../src/operations/WrappedOperation';
 import { SelfSelection } from '../../src/operations/SelfSelection';
 

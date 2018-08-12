@@ -35,3 +35,5 @@ src
 # Build nad test configurations
 tsconfig.json
 jest.config.js
+.prettierrc.json
+.travis.yml

@@ -1,4 +1,9 @@
-import { SimpleOperation, Noop, Insert, Delete } from '../../src/operations/SimpleOperation';
+import {
+    SimpleOperation,
+    SimpleNoop as Noop,
+    SimpleInsert as Insert,
+    SimpleDelete as Delete
+} from '../../src/operations/SimpleOperation';
 import { randomString, randomOperation, randomTest } from '../randomHelper';
 
 /* Noop or Noop */

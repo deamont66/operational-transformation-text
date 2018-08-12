@@ -23,23 +23,23 @@ export abstract class SimpleOperation {
         a: SimpleOperation,
         b: SimpleOperation
     ): [SimpleOperation, SimpleOperation] {
-        if (a instanceof Noop || b instanceof Noop) {
+        if (a instanceof SimpleNoop || b instanceof SimpleNoop) {
             return [a, b];
         }
 
-        if (a instanceof Insert && b instanceof Insert) {
-            return SimpleOperation.transformInserts(a as Insert, b as Insert);
+        if (a instanceof SimpleInsert && b instanceof SimpleInsert) {
+            return SimpleOperation.transformInserts(a as SimpleInsert, b as SimpleInsert);
         }
 
-        if (a instanceof Insert && b instanceof Delete) {
-            return SimpleOperation.transformInsertaAndDelete(a as Insert, b as Delete);
+        if (a instanceof SimpleInsert && b instanceof SimpleDelete) {
+            return SimpleOperation.transformInsertaAndDelete(a as SimpleInsert, b as SimpleDelete);
         }
 
-        if (a instanceof Delete && b instanceof Insert) {
-            return SimpleOperation.transformDeleteAndInsert(a as Delete, b as Insert);
+        if (a instanceof SimpleDelete && b instanceof SimpleInsert) {
+            return SimpleOperation.transformDeleteAndInsert(a as SimpleDelete, b as SimpleInsert);
         }
 
-        if (a instanceof Delete && b instanceof Delete) {
+        if (a instanceof SimpleDelete && b instanceof SimpleDelete) {
             return SimpleOperation.transformDeletes(a, b);
         }
 
@@ -57,67 +57,73 @@ export abstract class SimpleOperation {
      * @returns {[SimpleOperation, SimpleOperation]}
      * @memberof SimpleOperation
      */
-    private static transformInserts(a: Insert, b: Insert): [SimpleOperation, SimpleOperation] {
+    private static transformInserts(
+        a: SimpleInsert,
+        b: SimpleInsert
+    ): [SimpleOperation, SimpleOperation] {
         if (a.position < b.position || (a.position === b.position && a.str < b.str)) {
-            return [a, new Insert(b.str, b.position + a.str.length)];
+            return [a, new SimpleInsert(b.str, b.position + a.str.length)];
         } else if (a.position > b.position || (a.position === b.position && a.str > b.str)) {
-            return [new Insert(a.str, a.position + b.str.length), b];
+            return [new SimpleInsert(a.str, a.position + b.str.length), b];
         } else {
-            return [new Noop(), new Noop()];
+            return [new SimpleNoop(), new SimpleNoop()];
         }
     }
 
     private static transformInsertaAndDelete(
-        a: Insert,
-        b: Delete
+        a: SimpleInsert,
+        b: SimpleDelete
     ): [SimpleOperation, SimpleOperation] {
         if (a.position <= b.position) {
-            return [a, new Delete(b.count, b.position + a.str.length)];
+            return [a, new SimpleDelete(b.count, b.position + a.str.length)];
         } else if (a.position >= b.position + b.count) {
-            return [new Insert(a.str, a.position - b.count), b];
+            return [new SimpleInsert(a.str, a.position - b.count), b];
         }
         // Here, we have to delete the inserted string of operation a.
         // That doesn't preserve the intention of operation a, but it's the only
         // thing we can do to get a valid transform function.
-        return [new Noop(), new Delete(b.count + a.str.length, b.position)];
+        return [new SimpleNoop(), new SimpleDelete(b.count + a.str.length, b.position)];
     }
 
     private static transformDeleteAndInsert(
-        a: Delete,
-        b: Insert
+        a: SimpleDelete,
+        b: SimpleInsert
     ): [SimpleOperation, SimpleOperation] {
         const [resB, resA] = SimpleOperation.transformInsertaAndDelete(b, a);
         return [resA, resB];
     }
 
-    private static transformDeletes(a: Delete, b: Delete): [SimpleOperation, SimpleOperation] {
+    private static transformDeletes(
+        a: SimpleDelete,
+        b: SimpleDelete
+    ): [SimpleOperation, SimpleOperation] {
         if (a.position === b.position) {
             if (a.count === b.count) {
-                return [new Noop(), new Noop()];
+                return [new SimpleNoop(), new SimpleNoop()];
             } else if (a.count < b.count) {
-                return [new Noop(), new Delete(b.count - a.count, b.position)];
+                return [new SimpleNoop(), new SimpleDelete(b.count - a.count, b.position)];
             }
-            return [new Delete(a.count - b.count, a.position), new Noop()];
+            return [new SimpleDelete(a.count - b.count, a.position), new SimpleNoop()];
         } else if (a.position < b.position) {
             if (a.position + a.count <= b.position) {
-                return [a, new Delete(b.count, b.position - a.count)];
+                return [a, new SimpleDelete(b.count, b.position - a.count)];
             } else if (a.position + a.count >= b.position + b.count) {
-                return [new Delete(a.count - b.count, a.position), new Noop()];
+                return [new SimpleDelete(a.count - b.count, a.position), new SimpleNoop()];
             }
             return [
-                new Delete(b.position - a.position, a.position),
-                new Delete(b.position + b.count - (a.position + a.count), a.position)
+                new SimpleDelete(b.position - a.position, a.position),
+                new SimpleDelete(b.position + b.count - (a.position + a.count), a.position)
             ];
         } else {
             // if (a.position > b.position)
             if (a.position >= b.position + b.count) {
-                return [new Delete(a.count, a.position - b.count), b];
+                return [new SimpleDelete(a.count, a.position - b.count), b];
             } else if (a.position + a.count <= b.position + b.count) {
-                return [new Noop(), new Delete(b.count - a.count, b.position)];
+                return [new SimpleNoop(), new SimpleDelete(b.count - a.count, b.position)];
             }
             return [
-                new Delete(a.position + a.count - (b.position + b.count), b.position),
-                new Delete(a.position - b.position, b.position)
+                new SimpleDelete(a.position + a.count - (b.position + b.count), b.position),
+                new SimpleDelete(a.position - b.position, b.position)
             ];
         }
     }
@@ -138,18 +144,18 @@ export abstract class SimpleOperation {
             if (op.isRetain()) {
                 index += op.getNumberValue();
             } else if (op.isInsert()) {
-                simpleOperations.push(new Insert(op.getStringValue(), index));
+                simpleOperations.push(new SimpleInsert(op.getStringValue(), index));
                 index += op.getStringValue().length;
             } else {
                 // if (op.isDelete())
-                simpleOperations.push(new Delete(Math.abs(op.getNumberValue()), index));
+                simpleOperations.push(new SimpleDelete(Math.abs(op.getNumberValue()), index));
             }
         }
         return simpleOperations;
     }
 }
 
-export class Noop extends SimpleOperation {
+export class SimpleNoop extends SimpleOperation {
     apply(document: string): string {
         return document;
     }
@@ -163,11 +169,11 @@ export class Noop extends SimpleOperation {
     }
 
     equals(other: SimpleOperation): boolean {
-        return other instanceof Noop;
+        return other instanceof SimpleNoop;
     }
 }
 
-export class Delete extends SimpleOperation {
+export class SimpleDelete extends SimpleOperation {
     count: number;
     position: number;
 
@@ -195,14 +201,14 @@ export class Delete extends SimpleOperation {
 
     equals(other: SimpleOperation): boolean {
         return (
-            other instanceof Delete &&
+            other instanceof SimpleDelete &&
             other.count === this.count &&
             other.position === this.position
         );
     }
 }
 
-export class Insert extends SimpleOperation {
+export class SimpleInsert extends SimpleOperation {
     str: string;
     position: number;
 
@@ -230,7 +236,9 @@ export class Insert extends SimpleOperation {
 
     equals(other: SimpleOperation): boolean {
         return (
-            other instanceof Insert && other.str === this.str && other.position === this.position
+            other instanceof SimpleInsert &&
+            other.str === this.str &&
+            other.position === this.position
         );
     }
 }

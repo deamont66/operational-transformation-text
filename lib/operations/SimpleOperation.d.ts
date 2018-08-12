@@ -42,13 +42,13 @@ export declare abstract class SimpleOperation {
      */
     static fromTextOperation(operation: TextOperation): SimpleOperation[];
 }
-export declare class Noop extends SimpleOperation {
+export declare class SimpleNoop extends SimpleOperation {
     apply(document: string): string;
     toString(): string;
     toJson(): number;
     equals(other: SimpleOperation): boolean;
 }
-export declare class Delete extends SimpleOperation {
+export declare class SimpleDelete extends SimpleOperation {
     count: number;
     position: number;
     constructor(count: number, position: number);
@@ -57,7 +57,7 @@ export declare class Delete extends SimpleOperation {
     toJson(): number;
     equals(other: SimpleOperation): boolean;
 }
-export declare class Insert extends SimpleOperation {
+export declare class SimpleInsert extends SimpleOperation {
     str: string;
     position: number;
     constructor(str: string, position: number);

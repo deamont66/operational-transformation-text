@@ -1,4 +1,4 @@
-import { Insert, Noop } from '../../src/operations/SimpleOperation';
+import { SimpleInsert as Insert, SimpleNoop as Noop } from '../../src/operations/SimpleOperation';
 
 test('Insert constructor should checked passed parameters', () => {
     expect(() => new Insert('', 0)).toThrow(/str/);

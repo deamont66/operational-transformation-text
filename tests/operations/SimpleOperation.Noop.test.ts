@@ -1,4 +1,4 @@
-import { Insert, Noop } from '../../src/operations/SimpleOperation';
+import { SimpleInsert as Insert, SimpleNoop as Noop } from '../../src/operations/SimpleOperation';
 
 test('Noop equals should check type', () => {
     const ins = new Insert('hello', 0);

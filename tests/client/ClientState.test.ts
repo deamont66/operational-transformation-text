@@ -1,11 +1,10 @@
-import { AbstractLocalClient } from '../../src/client/AbstractLocalClient';
 import {
     Synchronized,
     AwaitingConfirm,
     ClientState,
     AwaitingWithBuffer
 } from '../../src/client/ClientState';
-import { TextOperation } from '../../src';
+import { TextOperation } from '../../src/operations/TextOperation';
 import { Selection } from '../../src/operations/Selection';
 import { TestLocalClient } from './AbstractLocalClient.test';
 

@@ -1,5 +1,5 @@
 import { AbstractLocalClient } from '../../src/client/AbstractLocalClient';
-import { TextOperation } from '../../src';
+import { TextOperation } from '../../src/operations/TextOperation';
 import { Synchronized, AwaitingConfirm } from '../../src/client/ClientState';
 import { Selection } from '../../src/operations/Selection';
 
