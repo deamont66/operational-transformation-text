@@ -1,11 +1,9 @@
 import { DocumentServer } from '../../src/server/DocumentServer';
 import { TextOperation } from '../../src/operations/TextOperation';
-
-jest.mock('../../src/operations/TextOperation');
-jest.mock('../../src/utils/SimpleTypedEvent');
+import { WrappedOperation } from '../../src/operations/WrappedOperation';
 
 class TestDocumentServer extends DocumentServer {
-    getOperationsAfterRevision(revisitionNumber: number): TextOperation[] {
+    getOperationsAfterRevision(revisitionNumber: number): Promise<TextOperation[]> {
         throw new Error('Not implemented in test implementation');
     }
 }
@@ -30,35 +28,40 @@ describe('DocumentServer getRevision', () => {
 });
 
 describe('DocumentServer receiveOperation', () => {
-    it('should call transformReceivedOperation and emit event', () => {
+    it('should call transformReceivedOperation and emit event', async () => {
         const server = new TestDocumentServer(5);
 
         const operation = new TextOperation().retain(5);
+        const wrappedOperation = new WrappedOperation(operation, null);
         const retOperation = new TextOperation().insert('a');
-        server.transformReceivedOperation = jest.fn().mockReturnValueOnce(retOperation);
+        const retWrappedOperation = new WrappedOperation(retOperation, null);
+        server.transformReceivedOperation = jest.fn().mockResolvedValue(retWrappedOperation);
         server.operationRecieved.emit = jest.fn();
 
-        const result = server.receiveOperation(5, operation);
-        expect(server.transformReceivedOperation).toBeCalledWith(5, operation);
-        expect(server.operationRecieved.emit).toBeCalledWith(retOperation);
-        expect(result).toBe(retOperation);
+        const result = await server.receiveOperation(5, wrappedOperation);
+        expect(server.transformReceivedOperation).toBeCalledWith(5, wrappedOperation);
+        expect(server.operationRecieved.emit).toBeCalledWith(retWrappedOperation);
+        expect(result).toBe(retWrappedOperation);
     });
 });
 
 describe('DocumentServer transformReceivedOperation', () => {
-    it('should call getOperationsAfterRevision and TextOperation.transform', () => {
+    it('should call getOperationsAfterRevision and TextOperation.transform', async () => {
         const server = new TestDocumentServer(5);
 
-        const operation = new TextOperation().retain(1);
+        const operation = new WrappedOperation(new TextOperation().retain(1), null);
         const concurrentOperations = [new TextOperation().delete(1)];
-        const retOperation = new TextOperation().insert('a');
+        const retOperation = new WrappedOperation(new TextOperation().insert('a'), null);
 
-        server.getOperationsAfterRevision = jest.fn().mockReturnValueOnce(concurrentOperations);
-        TextOperation.transform = jest.fn().mockReturnValue([retOperation]);
+        server.getOperationsAfterRevision = jest.fn().mockResolvedValue(concurrentOperations);
+        WrappedOperation.transform = jest.fn().mockReturnValue([retOperation]);
 
-        const result = server.transformReceivedOperation(5, operation);
+        const result = await server.transformReceivedOperation(5, operation);
         expect(server.getOperationsAfterRevision).toBeCalledWith(5);
-        expect(TextOperation.transform).toBeCalledWith(operation, concurrentOperations[0]);
+        expect(WrappedOperation.transform).toBeCalledWith(
+            operation,
+            new WrappedOperation(concurrentOperations[0], null)
+        );
         expect(result).toBe(retOperation);
     });
 });
