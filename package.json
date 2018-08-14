@@ -1,6 +1,6 @@
 {
     "name": "operational-transformation-text",
-    "version": "1.0.0",
+    "version": "1.0.1-0",
     "main": "lib/index",
     "types": "lib/index",
     "repository": "git@github.com:deamont66/operational-transformation-text.git",
